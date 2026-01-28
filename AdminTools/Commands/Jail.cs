@@ -3,6 +3,7 @@ using Exiled.API.Enums;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
 using Exiled.Permissions.Extensions;
+using InventorySystem.Items.Usables;
 using PlayerRoles;
 using System;
 using System.Collections.Generic;
@@ -74,6 +75,9 @@ namespace AdminTools.Commands
                 Main.JailedPlayers.Add(player.UserId, new Jailed
                 {
                     Health = player.Health,
+                    HumeShield = player.HumeShield,
+                    ActiveArtificialHealthProcesses = player.ActiveArtificialHealthProcesses,
+                    ActiveRegenerations = UsableItemsController.GetHandler(player.ReferenceHub).ActiveRegenerations,
                     RelativePosition = player.RelativePosition,
                     Items = player.Items.ToList(),
                     Effects = player.ActiveEffects.Select(x => new Effect(x)).ToList(),
@@ -104,6 +108,9 @@ namespace AdminTools.Commands
                 {
                     player.ResetInventory(jail.Items);
                     player.Health = jail.Health;
+                    player.HumeShield = jail.HumeShield;
+                    player.ActiveArtificialHealthProcesses = jail.ActiveArtificialHealthProcesses;
+                    UsableItemsController.GetHandler(player.ReferenceHub).ActiveRegenerations.AddRange(jail.ActiveRegenerations);
                     player.Position = jail.RelativePosition.Position;
                     foreach (KeyValuePair<AmmoType, ushort> kvp in jail.Ammo)
                         player.Ammo[kvp.Key.GetItemType()] = kvp.Value;
